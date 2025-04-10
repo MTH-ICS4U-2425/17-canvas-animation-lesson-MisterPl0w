@@ -8,7 +8,7 @@
  * Author: 
  */
 
-import { CTX, CANVAS, GRAVITY, FLOOR } from "./globals.js"
+import { CTX, GRAVITY, FLOOR } from "./globals.js"
 
 export default class Player {
   constructor(x, y, width, height) {
@@ -39,16 +39,16 @@ export default class Player {
    * Main function to update location, velocity, and image
    */
   update() {
-    // Add gravity to the hero, if they're already moving or not at the bottom
-    if (this.velocity.y != 0 || this.bottom != FLOOR)
+    // Add gravity to the hero, if they're not at the bottom
+    if (this.bottom < FLOOR)
       this.velocity.y += GRAVITY;
-
+    
     // If we hit the floor, stop falling
     if (this.bottom > FLOOR) {
       this.velocity.y = 0;
       this.bottom = FLOOR;
     }
-
+    
     // Update the location of the hero
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
@@ -63,8 +63,13 @@ export default class Player {
     CTX.fillRect(this.position.x, this.position.y, this.width, this.height);
   }
 
+  /**
+   * Make the player jump 
+   */
   jump() {
-    if (this.velocity.y == 0)
+    if (this.bottom >= FLOOR) {
+      this.bottom = FLOOR
       this.velocity.y = -22;
+    }
   }
 }
