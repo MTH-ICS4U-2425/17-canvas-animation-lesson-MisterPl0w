@@ -58,7 +58,7 @@ export default class Player {
    * Draw the player on the canvas
    */
   draw() {
-    CTX.fillStyle = "yellow";
+    CTX.fillStyle = "blue";
     CTX.fillRect(this.position.x, this.position.y, this.width, this.height);
   }
 

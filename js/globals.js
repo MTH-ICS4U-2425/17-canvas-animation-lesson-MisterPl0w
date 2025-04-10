@@ -13,6 +13,9 @@ export const CANVAS = document.getElementById('game_canvas');
 export const CTX = CANVAS.getContext('2d', {
       powerPreference: "high-performance"
     });
+
+CTX.filter = 'invert(1)';
+
 export const PATH = new Image();
 PATH.src = "../images/dino_large.png";
   
