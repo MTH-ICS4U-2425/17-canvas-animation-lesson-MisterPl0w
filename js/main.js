@@ -10,10 +10,13 @@
 'use strict';
 
 import Player from "./player.js";
+import Ground from "./ground.js";
 import { CANVAS, CTX, MS_PER_FRAME, KEYS } from "./globals.js";
 
 // Globals
 const HERO = new Player(120, 50, 48, 48);
+const GROUND = new Ground();
+
 
 let frame_time = performance.now()
 
@@ -57,6 +60,12 @@ function update() {
   
   // Clear the canvas
   CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+  
+  // Draw the ground
+  GROUND.update();
+  
+  // drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+  //CTX.drawImage(ground, 0, 103, 2300, 26, ground.x_pos, 300, 2300, 28)
   
   // Draw our hero
   HERO.update();

@@ -13,6 +13,8 @@ export const CANVAS = document.getElementById('game_canvas');
 export const CTX = CANVAS.getContext('2d', {
       powerPreference: "high-performance"
     });
+export const PATH = new Image();
+PATH.src = "../images/dino_large.png";
   
 // FPS Trapping
 export const FPS = 60;
@@ -20,7 +22,7 @@ export const MS_PER_FRAME = 1000 / FPS;
 
 // Movement
 export const GRAVITY = 1;
-export const FLOOR = CANVAS.height;  // Careful - if the height ever changes...
+export const FLOOR = CANVAS.height - 28;  // Careful - if the height ever changes...
 
 // Some convenient keyboard codes
 export const KEYS = {
@@ -42,5 +44,17 @@ export const KEYS = {
  */
 export function $(id) { return document.getElementById(id); }
 
+/**
+ * Return a random integer from min to max (inclusive)
+ * @param {number} min The lowest possible integer.
+ * @param {number} max The highest possibe integer.
+ * @returns {number} a random integer from min to max.
+ */
+export function randInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 // Export all the constants by default
-export default { CANVAS, CTX, FPS, MS_PER_FRAME, GRAVITY, FLOOR, KEYS, $ }
+export default { CANVAS, CTX, FPS, MS_PER_FRAME, GRAVITY, FLOOR, KEYS, $, PATH, randInt}

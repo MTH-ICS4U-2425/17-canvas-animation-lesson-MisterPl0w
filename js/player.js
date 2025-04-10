@@ -39,14 +39,13 @@ export default class Player {
    * Main function to update location, velocity, and image
    */
   update() {
-    // Add gravity to the hero, if they're not at the bottom
-    if (this.bottom < FLOOR)
-      this.velocity.y += GRAVITY;
     
-    // If we hit the floor, stop falling
-    if (this.bottom > FLOOR) {
+    // If we WILL hit the floor, stop falling
+    if (this.bottom + this.velocity.y >= FLOOR) {
       this.velocity.y = 0;
       this.bottom = FLOOR;
+    } else {
+      this.velocity.y += GRAVITY;
     }
     
     // Update the location of the hero
