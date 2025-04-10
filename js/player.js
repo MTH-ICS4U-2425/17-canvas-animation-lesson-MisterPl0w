@@ -8,7 +8,7 @@
  * Author: 
  */
 
-import { CTX, GRAVITY, FLOOR } from "./globals.js"
+import { CTX, GRAVITY, FLOOR, SPRITE_SHEET } from "./globals.js"
 
 export default class Player {
   constructor(x, y, width, height) {
@@ -23,6 +23,10 @@ export default class Player {
       x: 0,
       y: 0
     };
+
+    this.sx = [1854, 1942, 1678];
+    this.sy = 1;
+    this.frame = 0;
   }
 
   // Getters and setters (the setters are kinda cheating but whatever)
@@ -38,7 +42,7 @@ export default class Player {
   /**
    * Main function to update location, velocity, and image
    */
-  update() {
+  update(frame_time) {
     
     // If we WILL hit the floor, stop falling
     if (this.bottom + this.velocity.y >= FLOOR) {
@@ -51,15 +55,23 @@ export default class Player {
     // Update the location of the hero
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-    this.draw();
+    this.draw(frame_time);
   }
-
+  
   /**
    * Draw the player on the canvas
-   */
-  draw() {
-    CTX.fillStyle = "yellow";
-    CTX.fillRect(this.position.x, this.position.y, this.width, this.height);
+  */
+ draw(frame_time) {
+   if (this.bottom == FLOOR) {
+      // Change the feet every 6 frames
+      if (Math.round(frame_time) % 6 == 0)
+        this.frame = this.frame == 0 ? 1 : 0;
+
+      CTX.drawImage(SPRITE_SHEET, this.sx[this.frame], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
+    } else {
+      CTX.drawImage(SPRITE_SHEET, this.sx[2], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
+      
+    }
   }
 
   /**
@@ -68,7 +80,7 @@ export default class Player {
   jump() {
     if (this.bottom >= FLOOR) {
       this.bottom = FLOOR
-      this.velocity.y = -22;
+      this.velocity.y = -21;
     }
   }
 }

@@ -13,8 +13,9 @@ export const CANVAS = document.getElementById('game_canvas');
 export const CTX = CANVAS.getContext('2d', {
       powerPreference: "high-performance"
     });
-export const PATH = new Image();
-PATH.src = "../images/dino_large.png";
+CTX.filter = 'invert(1)'
+export const SPRITE_SHEET = $("sprite_sheet")
+//PATH.src = "../images/dino_large.png";
   
 // FPS Trapping
 export const FPS = 60;
@@ -57,4 +58,4 @@ export function randInt(min, max) {
 }
 
 // Export all the constants by default
-export default { CANVAS, CTX, FPS, MS_PER_FRAME, GRAVITY, FLOOR, KEYS, $, PATH, randInt}
+export default { CANVAS, CTX, FPS, MS_PER_FRAME, GRAVITY, FLOOR, KEYS, $, SPRITE_SHEET, randInt}

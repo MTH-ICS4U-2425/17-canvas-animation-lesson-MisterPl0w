@@ -5,15 +5,13 @@
  * 
  * Author: Mr. Brash 🐿️
  */
-import { PATH, CTX, CANVAS, randInt } from "./globals.js"
+import { SPRITE_SHEET, CTX, CANVAS, randInt } from "./globals.js"
 
-//CTX.drawImage(ground, 0, 103, 2300, 26, ground.x_pos, 300, 2300, 28)
 const SY = 103;
 const SH = 26;
 const DY = 300;
 const DH = SH;
 const CHUNK_WIDTH = 200;
-//export const FINAL_CHUNK = CHUNK_WIDTH * 7;
 
 class Ground_Img {
   constructor(dx) {
@@ -38,14 +36,12 @@ class Ground_Img {
   }
   
   draw() {
-    CTX.drawImage(PATH, this.sx, SY, CHUNK_WIDTH, SH, this.dx, DY, CHUNK_WIDTH, DH);
+    CTX.drawImage(SPRITE_SHEET, this.sx, SY, CHUNK_WIDTH, SH, this.dx, DY, CHUNK_WIDTH, DH);
   }
 }
 
 export default class Ground {
   constructor() {
-    this.velocity = -4;
-    
     // Generate and draw the starting ground (we'll use 8 images)
     this.images = []
     for (let x = 0; x < 8; x++) {
@@ -54,11 +50,9 @@ export default class Ground {
   }
 
   // Move all the images (which will draw themselves)
-  update() {
+  update(velocity) {
     for (let i of this.images) {
-      i.update(this.velocity);
-      //i.draw()
-      
+      i.update(velocity);
     }
   }
 }
