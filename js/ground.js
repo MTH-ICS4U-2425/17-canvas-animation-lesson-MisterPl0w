@@ -15,7 +15,7 @@ const CHUNK_WIDTH = 200;
 
 class Ground_Img {
   constructor(dx) {
-    this.sx = CHUNK_WIDTH * randInt(1, 10);
+    this.sx = CHUNK_WIDTH * randInt(0, 10) + 5;
     this.dx = dx * CHUNK_WIDTH;
     // I was just created, I should draw myself
     this.draw();
@@ -25,7 +25,7 @@ class Ground_Img {
   update(velocity) {
     // Check to see if it's off the canvas... if yes, regenerate it
     if (this.dx < -1 * CHUNK_WIDTH) {
-      this.sx = CHUNK_WIDTH * randInt(1, 10);
+      this.sx = CHUNK_WIDTH * randInt(0, 10) + 5;
       // The extra velocity is a buffer to eliminate gaps
       this.dx = 7 * CHUNK_WIDTH + velocity;
     }
@@ -40,6 +40,7 @@ class Ground_Img {
   }
 }
 
+// Overseer of the ground - contains an array of Ground_Img objects
 export default class Ground {
   constructor() {
     // Generate and draw the starting ground (we'll use 8 images)

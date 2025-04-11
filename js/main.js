@@ -3,7 +3,7 @@
  * 
  * 17 - Canvas Animation
  * 
- * Author:
+ * Author: Mr. Squirrel
  * 
  */
 
@@ -16,7 +16,6 @@ import { CANVAS, CTX, MS_PER_FRAME, KEYS, SPRITE_SHEET, randInt } from "./global
 // Globals
 const HERO = new Player(120, 50, 88, 93);
 const GROUND = new Ground();
-const JUMP_KEYS = [KEYS.SPACE, KEYS.W, KEYS.UP_ARROW]
 
 // Instead - let's pre-bake the star and cloud memory spaces and only "activate" or "deactivate" them, as necessary
 // Changes to come!
@@ -42,7 +41,7 @@ document.addEventListener("contextmenu", (event) => {
 function keypress(event) {
   //console.log(event.keyCode)
 
-  if (JUMP_KEYS.includes(event.keyCode)) {
+  if ([KEYS.SPACE, KEYS.W, KEYS.UP_ARROW].includes(event.keyCode)) {
     HERO.jump();
   }
 }
@@ -69,29 +68,17 @@ function update() {
   // Clear the canvas
   CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
 
-  // See if we should add any background items
-  // Clouds
-  if (randInt(1, 200) == 100 && CLOUDS.length < 15 && frame_count < 20) {
-    CLOUDS.push({x:CANVAS.width, y:randInt(10, 275), velocity_divider:randInt(5, 20)});
-  }
+  /**** Background graphics ****/
 
-  // Stars
-  if (randInt(1, 300) == 50 && STARS.length < 25 && frame_count > 40) {
-    STARS.push({x:CANVAS.width, y:randInt(10, 275), type:randInt(0, 2), velocity_divider:randInt(12, 40)});
-  }
-
-  // Draw background items
-  for (let i in STARS) {
-    let s = STARS[i];
-    CTX.filter = "invert(1)";
-    CTX.drawImage(SPRITE_SHEET, 1274, s.type*18 + 1, 18, 18, s.x, s.y, 18, 18);
-    CTX.filter = "invert(0.9)";
-    s.x += velocity / s.velocity_divider;
-    if (s.x < -20) {
-      STARS.splice(i--, 1)
+  // Clouds (the setup for this might change)
+  // Don't crowd the clouds
+  if (CLOUDS.length == 0 || CLOUDS[CLOUDS.length - 1].x < CANVAS.width - 400) {
+    if (randInt(1, 200) == 100 && CLOUDS.length < 15 && frame_count < 20) {
+      CLOUDS.push({x:CANVAS.width, y:randInt(10, 250), velocity_divider:randInt(5, 20)});
     }
   }
-  
+
+  // Draw the clouds
   for (let i in CLOUDS) {
     let c = CLOUDS[i];
     CTX.drawImage(SPRITE_SHEET, 165, 0, 95, 35, c.x, c.y, 95, 35);
@@ -101,11 +88,37 @@ function update() {
     }
   }
 
+  // Stars (the setup for this might change)
+  // Don't crowd the stars
+  if (STARS.length == 0 || STARS[STARS.length - 1].x < CANVAS.width - 150) {
+    if (randInt(1, 300) == 50 && STARS.length < 25 && frame_count > 40) {
+      STARS.push({x:CANVAS.width, y:randInt(10, 280), type:randInt(0, 2)});
+    }
+  }
+
+  // Draw the stars
+  for (let i in STARS) {
+    let s = STARS[i];
+    CTX.filter = "invert(1)";
+    CTX.drawImage(SPRITE_SHEET, 1274, s.type*18 + 1, 18, 18, s.x, s.y, 18, 18);
+    CTX.filter = "invert(0.9)";
+    s.x += velocity / 20;
+    if (s.x < -20) {
+      STARS.splice(i--, 1)
+    }
+  }
+
+  // Moon
+
+
   // Draw the ground
   GROUND.update(velocity);
 
   // Draw our hero
   HERO.update(frame_count);
+
+  // Randomly jump - just for automation, this will get removed
+  if (randInt(1, 400) == 200) HERO.jump()
 }
 
 // Start the animation
