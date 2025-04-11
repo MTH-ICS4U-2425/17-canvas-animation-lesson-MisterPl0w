@@ -63,9 +63,8 @@ export default class Player {
   */
  draw(frame_time) {
    if (this.bottom == FLOOR) {
-      // Change the feet every 6 frames
-      if (Math.round(frame_time) % 6 == 0)
-        this.frame = this.frame == 0 ? 1 : 0;
+      // Change the feet every 10 frames
+      this.frame = frame_time > 10 ? 1 : 0;
 
       CTX.drawImage(SPRITE_SHEET, this.sx[this.frame], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
     } else {

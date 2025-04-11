@@ -59,7 +59,7 @@ function update() {
   
   if (TIME_PASSED < MS_PER_FRAME) return
   
-  frame_count = frame_count > 60 ? 1 : frame_count + 1;
+  frame_count = frame_count > 20 ? 1 : frame_count + 1;
 
   const EXCESS_TIME = TIME_PASSED % MS_PER_FRAME
   frame_time = NOW - EXCESS_TIME
