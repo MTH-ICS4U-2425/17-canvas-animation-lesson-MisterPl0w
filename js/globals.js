@@ -13,7 +13,7 @@ export const CANVAS = document.getElementById('game_canvas');
 export const CTX = CANVAS.getContext('2d', {
       powerPreference: "high-performance"
     });
-CTX.filter = 'invert(1)'
+CTX.filter = 'invert(0.9)'
 export const SPRITE_SHEET = $("sprite_sheet")
 //PATH.src = "../images/dino_large.png";
   
