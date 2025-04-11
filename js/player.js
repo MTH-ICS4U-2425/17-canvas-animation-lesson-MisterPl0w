@@ -39,7 +39,6 @@ export default class Player {
    * Main function to update location, velocity, and image
    */
   update() {
-    
     // If we WILL hit the floor, stop falling
     if (this.bottom + this.velocity.y >= FLOOR) {
       this.velocity.y = 0;

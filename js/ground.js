@@ -6,14 +6,11 @@
  * Author: Mr. Brash 🐿️
  */
 import { PATH, CTX, CANVAS, randInt } from "./globals.js"
-
-//CTX.drawImage(ground, 0, 103, 2300, 26, ground.x_pos, 300, 2300, 28)
-const SY = 103;
-const SH = 26;
-const DY = 300;
+const SY = 102;
+const SH = 27;
+const DY = 305;
 const DH = SH;
 const CHUNK_WIDTH = 200;
-//export const FINAL_CHUNK = CHUNK_WIDTH * 7;
 
 class Ground_Img {
   constructor(dx) {

@@ -33,9 +33,7 @@ document.addEventListener("contextmenu", (event) => {
  * The user pressed a key on the keyboard 
  */
 function keypress(event) {
-  console.log(event.keyCode)
-
-  if (event.keyCode == KEYS.SPACE) {
+  if ([KEYS.W, KEYS.UP_ARROW, KEYS.SPACE].includes(event.keyCode)) {
     console.log(HERO.bottom, HERO.velocity.y)
     HERO.jump();
   }
