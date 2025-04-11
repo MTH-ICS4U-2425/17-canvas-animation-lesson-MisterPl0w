@@ -16,6 +16,7 @@ import { CANVAS, CTX, MS_PER_FRAME, KEYS, SPRITE_SHEET, randInt } from "./global
 // Globals
 const HERO = new Player(120, 50, 88, 93);
 const GROUND = new Ground();
+const JUMP_KEYS = [KEYS.SPACE, KEYS.W, KEYS.UP_ARROW]
 
 // Instead - let's pre-bake the star and cloud memory spaces and only "activate" or "deactivate" them, as necessary
 // Changes to come!
@@ -39,9 +40,9 @@ document.addEventListener("contextmenu", (event) => {
  * The user pressed a key on the keyboard 
  */
 function keypress(event) {
-  console.log(event.keyCode)
+  //console.log(event.keyCode)
 
-  if (event.keyCode == KEYS.SPACE) {
+  if (JUMP_KEYS.includes(event.keyCode)) {
     HERO.jump();
   }
 }
