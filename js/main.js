@@ -167,7 +167,7 @@ function update() {
 
 
   // Randomly jump or duck - just for automation, this will get removed
-  if (automate && frame_count % 50 == 0) {
+  if (automate && frame_count % 5 == 0) {
     let rnd = randInt(1, 400);
     if (rnd == 200) {
       HERO.jump()
