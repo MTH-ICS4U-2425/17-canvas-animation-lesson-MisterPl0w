@@ -19,6 +19,7 @@ const RIGHT_CONSTRAINT = 550;
 const HERO = new Player(120, 50, 88, 93);
 const GROUND = new Ground();
 const CLOUDS = [];
+const MOON = {x: CANVAS.width + 10, y: 80, frame: 0, max_frame: 7}
 const STARS = [];
 
 
@@ -94,12 +95,22 @@ function update() {
   CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
 
   /**** Background graphics ****/
-
+  //CTX.filter = "invert(1)";
+  
+  // Moon
+  if (MOON.x < -45) {
+    MOON.frame = MOON.frame == MOON.max_frame ? 0 : MOON.frame + 1;
+    MOON.x = CANVAS.width + 50;
+  } else {
+    MOON.x -= 0.1;
+    CTX.drawImage(SPRITE_SHEET, 953 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
+  }
   // Activate a cloud and/or star - it might already be active
   if (frame_count % 150 == 0 && randInt(0, 2) == 1) {
     CLOUDS[randInt(0, 7)].active = true;
     STARS[randInt(0, 7)].active = true;
   }
+  // Draw the clouds and stars
   for (let c = 0; c < 8; c++) {
 
     if (CLOUDS[c].active) {
@@ -124,15 +135,18 @@ function update() {
         STARS[c].velocity_divider = randInt(5, 20);
       }
       else {
-        CTX.filter = "invert(1)";
+        // Twinkle the stars (is this worth it? Does it work?)
+        if (frame_count % 10 == 0) {
+          let rnd = randInt(80, 100)/100
+          CTX.filter = `invert(${rnd})`
+        }
         CTX.drawImage(SPRITE_SHEET, 1274, STARS[c].type*18 + 1, 18, 18, STARS[c].x, STARS[c].y, 18, 18);
-        CTX.filter = "invert(0.9)";
         STARS[c].x += velocity / 20;
+        CTX.filter = 'invert(0.98)'
       }
     }
+    //CTX.filter = "invert(0.9)";
   }
-
-  // Moon
 
 
   // Draw the ground
@@ -141,8 +155,15 @@ function update() {
   // Draw our 
   HERO.update(frame_count);
 
-  // Randomly jump - just for automation, this will get removed
-  //if (randInt(1, 400) == 200) HERO.jump()
+  // Randomly jump or duck - just for automation, this will get removed
+  let rnd = randInt(1, 400);
+  if (rnd == 200)
+    HERO.jump()
+  else if (rnd == 100)
+    KEYS_PRESSED.down = true;
+  else if (rnd % 60 == 0)
+    KEYS_PRESSED.down = false;
+
 
   // Move the hero if the correct button is pressed
   if (KEYS_PRESSED.left && HERO.left > LEFT_CONSTRAINT)
