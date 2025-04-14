@@ -29,6 +29,7 @@ let frame_count = 1;
 let velocity = -4;
 let automate = true;
 let twinkle = true;
+let bgmusic;
 
 // Setup the clouds and stars
 for (let i = 0; i < 8; i++) {
@@ -37,8 +38,9 @@ for (let i = 0; i < 8; i++) {
 }
 
 // Event Listeners
-document.addEventListener("keydown", keypress);
 document.addEventListener("keyup", key_release);
+$("volume").addEventListener("input", volume);
+$("mute").addEventListener("click", mute);
 $("twinkle").addEventListener("click", () => {twinkle = $("twinkle").checked});
 $("automate").addEventListener("click", () => {automate = $("automate").checked});
 
@@ -209,15 +211,43 @@ function update() {
 // Start paused for now (remove this later)
 //playPause();
 
-// Music try #2?
-let bgmusic = new Audio("../media/arcade_music2.mp3")
-bgmusic.volume = $("volume").value/100;
-bgmusic.addEventListener("canplay", () => { 
-  bgmusic.loop = true;
+// Update the volume of the music & sounds
+function volume() {
+  bgmusic.volume = ($("volume").value/100);
+}
+
+function mute() {
+  if (!bgmusic.muted) {
+    document.getElementById("mute").src = "../images/Mute.png";
+  } else {
+    document.getElementById("mute").src = "../images/Volume.png";
+  }
+  document.getElementById("volume").disabled = !bgmusic.muted;
+  bgmusic.muted = !bgmusic.muted;
+}
+
+function splash_screen() {
+  // Setup the music
+  bgmusic = new Audio("../media/arcade_music2.mp3")
+  bgmusic.volume = $("volume").value/100;
+  bgmusic.addEventListener("canplay", () => { 
+    bgmusic.loop = true;
+  })
+}
+
+function start_game() {
+  // Replace the spacebar listener
+  document.removeEventListener("keydown",space_listener)
+  document.addEventListener("keydown", keypress);
+
+  // Start the music
   bgmusic.play();
-  bgmusic.lo
-})
 
+  // Start the game!
+  update();
+}
 
-// Start the animation
-update()
+let space_listener = document.addEventListener("keydown", start_game);
+
+splash_screen()
+

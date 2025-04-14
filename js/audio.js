@@ -146,6 +146,7 @@ function mute() {
 }
 
 // Set the volume of the sounds as fraction of 100
-function volume(value) {
-  gainNode.gain.value = value*value;
-}
+// function volume(value) {
+//   gainNode.gain.value = value*value;
+  
+// }
