@@ -22,7 +22,7 @@ export const FPS = 60;
 export const MS_PER_FRAME = 1000 / FPS;
 
 // Movement
-export const GRAVITY = 1;
+export const GRAVITY = 1.5;
 export const FLOOR = CANVAS.height - 28;  // Careful - if the height ever changes...
 
 // Some convenient keyboard codes
@@ -36,6 +36,12 @@ export const KEYS = {
   A:65,
   S:83,
   D:68
+};
+
+export const KEYS_PRESSED = {
+  left: false,
+  right:false,
+  down: false
 };
 
 /**

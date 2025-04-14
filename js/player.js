@@ -8,7 +8,7 @@
  * Author: 
  */
 
-import { CTX, GRAVITY, FLOOR, SPRITE_SHEET } from "./globals.js"
+import { CTX, GRAVITY, FLOOR, SPRITE_SHEET, KEYS_PRESSED } from "./globals.js"
 
 export default class Player {
   constructor(x, y, width, height) {
@@ -24,7 +24,7 @@ export default class Player {
       y: 0
     };
 
-    this.sx = [1854, 1942, 1678];
+    this.sx = [1854, 1942, 1678, 2210, 2328];
     this.sy = 1;
     this.frame = 0;
   }
@@ -61,17 +61,16 @@ export default class Player {
   /**
    * Draw the player on the canvas
   */
- draw(frame_time) {
-   if (this.bottom == FLOOR) {
+  draw(frame_time) {
+   if (this.bottom == FLOOR && !KEYS_PRESSED.down) {
       // Change the feet 
-      //if (frame_time % 6 == 0)
-        this.frame = frame_time % 12 > 5 ? 0 : 1;
-      //this.frame = (frame_time / 60) > 2.5 ? 1 : 0;
-
+      this.frame = frame_time % 12 > 5 ? 0 : 1;
       CTX.drawImage(SPRITE_SHEET, this.sx[this.frame], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
+    } else if (this.bottom == FLOOR && KEYS_PRESSED.down) {
+      this.frame = frame_time % 12 > 5 ? 3 : 4;
+      CTX.drawImage(SPRITE_SHEET, this.sx[this.frame], this.sy, 115, this.height, this.left, this.top, 115, this.height);
     } else {
       CTX.drawImage(SPRITE_SHEET, this.sx[2], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
-      
     }
   }
 
@@ -81,7 +80,7 @@ export default class Player {
   jump() {
     if (this.bottom >= FLOOR) {
       this.bottom = FLOOR
-      this.velocity.y = -21;
+      this.velocity.y = -26;
     }
   }
 }
