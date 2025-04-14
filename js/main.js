@@ -12,6 +12,7 @@
 import Player from "./player.js";
 import Ground from "./ground.js";
 import { CANVAS, CTX, MS_PER_FRAME, KEYS, SPRITE_SHEET, randInt, KEYS_PRESSED, $ } from "./globals.js";
+import Cactus from "./cacti.js";
 
 // Globals
 const LEFT_CONSTRAINT = 50;
@@ -21,7 +22,7 @@ const GROUND = new Ground();
 const CLOUDS = [];
 const MOON = {x: CANVAS.width + 10, y: 80, frame: 0, max_frame: 7}
 const STARS = [];
-
+const CACTI = [];
 
 let frame_time = performance.now()
 let frame_count = 1;
@@ -115,19 +116,6 @@ function update() {
   // Draw the clouds and stars
   for (let c = 0; c < 8; c++) {
 
-    if (CLOUDS[c].active) {
-      // If I'm off the screen, deactivate me
-      if (CLOUDS[c].x < -100) {
-        CLOUDS[c].active = false;
-        CLOUDS[c].x = CANVAS.width;
-        CLOUDS[c].y = randInt(10, 250);
-        CLOUDS[c].velocity_divider = randInt(5, 20);
-      }
-      else {
-        CTX.drawImage(SPRITE_SHEET, 165, 0, 95, 35, CLOUDS[c].x, CLOUDS[c].y, 95, 35);
-        CLOUDS[c].x += velocity / CLOUDS[c].velocity_divider;
-      }
-    }
     if (STARS[c].active) {
       // If I'm off the screen, deactivate me
       if (STARS[c].x < -20) {
@@ -144,6 +132,19 @@ function update() {
         CTX.drawImage(SPRITE_SHEET, 1274, STARS[c].type*18 + 1, 18, 18, STARS[c].x, STARS[c].y, 18, 18);
         STARS[c].x += velocity / 20;
         CTX.filter = 'invert(0.98)'
+        if (CLOUDS[c].active) {
+          // If I'm off the screen, deactivate me
+          if (CLOUDS[c].x < -100) {
+            CLOUDS[c].active = false;
+            CLOUDS[c].x = CANVAS.width;
+            CLOUDS[c].y = randInt(10, 250);
+            CLOUDS[c].velocity_divider = randInt(5, 20);
+          }
+          else {
+            CTX.drawImage(SPRITE_SHEET, 165, 0, 95, 35, CLOUDS[c].x, CLOUDS[c].y, 95, 35);
+            CLOUDS[c].x += velocity / CLOUDS[c].velocity_divider;
+          }
+        }
       }
     }
   }
@@ -151,7 +152,22 @@ function update() {
   // Draw the ground
   GROUND.update(velocity);
 
-  // Draw our 
+  // Draw enemies or obstacles...
+  
+  // Should we add a cactus?
+  if (frame_count % 100 == 0 && randInt(0, 4) == 3) CACTI.push(new Cactus())
+  for (let c of CACTI) {
+    c.update(velocity);
+  }
+  // remove dead cacti
+  for (let c = 0; c < CACTI.length; c++) {
+    if (c.x < 0 - c.width) {
+      CACTI.splice(c, 1)
+      c--
+    }
+  }
+  
+  // Draw our hero
   HERO.update(frame_count);
 
   // Move the hero if the correct button is pressed
@@ -189,9 +205,19 @@ function update() {
 }
 
 // Start the music
-initSounds();
+//initSounds();
 // Start paused for now (remove this later)
-playPause();
+//playPause();
+
+// Music try #2?
+let bgmusic = new Audio("../media/arcade_music2.mp3")
+bgmusic.volume = $("volume").value/100;
+bgmusic.addEventListener("canplay", () => { 
+  bgmusic.loop = true;
+  bgmusic.play();
+  bgmusic.lo
+})
+
 
 // Start the animation
 update()
