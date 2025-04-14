@@ -104,7 +104,7 @@ function update() {
     MOON.frame = MOON.frame == MOON.max_frame ? 0 : MOON.frame + 1;
     MOON.x = CANVAS.width + 50;
   } else {
-    MOON.x -= 0.2;
+    MOON.x -= 0.25;
     CTX.drawImage(SPRITE_SHEET, 953 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
   }
   // Activate a cloud and/or star - it might already be active
@@ -134,10 +134,9 @@ function update() {
         STARS[c].active = false;
         STARS[c].x = CANVAS.width;
         STARS[c].y = randInt(10, 250);
-        STARS[c].velocity_divider = randInt(5, 20);
       }
       else {
-        // twinkle the stars (is this worth it? Does it work?)
+        // twinkle the stars 
         if (twinkle && frame_count % 10 == 0) {
           let rnd = randInt(80, 100)/100
           CTX.filter = `invert(${rnd})`
@@ -147,9 +146,7 @@ function update() {
         CTX.filter = 'invert(0.98)'
       }
     }
-    //CTX.filter = "invert(0.9)";
   }
-
 
   // Draw the ground
   GROUND.update(velocity);
@@ -190,6 +187,11 @@ function update() {
 
   }
 }
+
+// Start the music
+initSounds();
+// Start paused for now (remove this later)
+playPause();
 
 // Start the animation
 update()
