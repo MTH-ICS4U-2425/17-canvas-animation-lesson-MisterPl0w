@@ -102,7 +102,7 @@ function update() {
     MOON.frame = MOON.frame == MOON.max_frame ? 0 : MOON.frame + 1;
     MOON.x = CANVAS.width + 50;
   } else {
-    MOON.x -= 0.1;
+    MOON.x -= 0.2;
     CTX.drawImage(SPRITE_SHEET, 953 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
   }
   // Activate a cloud and/or star - it might already be active
