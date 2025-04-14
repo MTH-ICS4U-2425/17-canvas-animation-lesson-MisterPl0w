@@ -11,7 +11,7 @@
 
 import Player from "./player.js";
 import Ground from "./ground.js";
-import { CANVAS, CTX, MS_PER_FRAME, KEYS, SPRITE_SHEET, randInt, KEYS_PRESSED } from "./globals.js";
+import { CANVAS, CTX, MS_PER_FRAME, KEYS, SPRITE_SHEET, randInt, KEYS_PRESSED, $ } from "./globals.js";
 
 // Globals
 const LEFT_CONSTRAINT = 50;
@@ -26,6 +26,8 @@ const STARS = [];
 let frame_time = performance.now()
 let frame_count = 1;
 let velocity = -4;
+let automate = true;
+let twinkle = true;
 
 // Setup the clouds and stars
 for (let i = 0; i < 8; i++) {
@@ -36,6 +38,8 @@ for (let i = 0; i < 8; i++) {
 // Event Listeners
 document.addEventListener("keydown", keypress);
 document.addEventListener("keyup", key_release);
+$("twinkle").addEventListener("click", () => {twinkle = $("twinkle").checked});
+$("automate").addEventListener("click", () => {automate = $("automate").checked});
 
 // Disable the context menu on the entire document
 document.addEventListener("contextmenu", (event) => { 
@@ -103,7 +107,7 @@ function update() {
     MOON.x = CANVAS.width + 50;
   } else {
     MOON.x -= 0.2;
-    CTX.drawImage(SPRITE_SHEET, 953 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
+    CTX.drawImage(SPRITE_SHEET, 952 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
   }
   // Activate a cloud and/or star - it might already be active
   if (frame_count % 150 == 0 && randInt(0, 2) == 1) {
@@ -135,8 +139,8 @@ function update() {
         STARS[c].velocity_divider = randInt(5, 20);
       }
       else {
-        // Twinkle the stars (is this worth it? Does it work?)
-        if (frame_count % 10 == 0) {
+        // twinkle the stars (is this worth it? Does it work?)
+        if (twinkle && frame_count % 10 == 0) {
           let rnd = randInt(80, 100)/100
           CTX.filter = `invert(${rnd})`
         }
@@ -155,21 +159,38 @@ function update() {
   // Draw our 
   HERO.update(frame_count);
 
-  // Randomly jump or duck - just for automation, this will get removed
-  let rnd = randInt(1, 400);
-  if (rnd == 200)
-    HERO.jump()
-  else if (rnd == 100)
-    KEYS_PRESSED.down = true;
-  else if (rnd % 60 == 0)
-    KEYS_PRESSED.down = false;
-
-
   // Move the hero if the correct button is pressed
   if (KEYS_PRESSED.left && HERO.left > LEFT_CONSTRAINT)
     HERO.left -= 5;
   else if (KEYS_PRESSED.right && HERO.right < RIGHT_CONSTRAINT)
     HERO.left += 5;
+
+
+  // Randomly jump or duck - just for automation, this will get removed
+  if (automate && frame_count % 50 == 0) {
+    let rnd = randInt(1, 400);
+    if (rnd == 200) {
+      HERO.jump()
+      KEYS_PRESSED.down = false;
+    }
+    else if (rnd == 100)
+      KEYS_PRESSED.down = true;
+    else if (rnd % 60 == 0)
+      KEYS_PRESSED.down = false;
+    else if (rnd == 99) {
+      KEYS_PRESSED.left = true;
+      KEYS_PRESSED.right = false;
+    }
+    else if (rnd == 98) {
+      KEYS_PRESSED.right = true;
+      KEYS_PRESSED.left = false;
+    }
+    else if (rnd % 70 == 0) {
+      KEYS_PRESSED.left = false;
+      KEYS_PRESSED.right = false;
+    }
+
+  }
 }
 
 // Start the animation

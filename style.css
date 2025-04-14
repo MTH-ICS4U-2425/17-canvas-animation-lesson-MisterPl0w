@@ -1,6 +1,7 @@
 body {
   margin: 0;
   background-color: #555555;
+  color: white;
 
   /* To disable user interaction (copy, touch, etc) */
   user-select: none;

@@ -24,7 +24,7 @@ export default class Player {
       y: 0
     };
 
-    this.sx = [1854, 1942, 1678, 2210, 2328];
+    this.sx = [1854, 1942, 1678, 2206, 2324];
     this.sy = 1;
     this.frame = 0;
   }
@@ -68,7 +68,7 @@ export default class Player {
       CTX.drawImage(SPRITE_SHEET, this.sx[this.frame], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
     } else if (this.bottom == FLOOR && KEYS_PRESSED.down) {
       this.frame = frame_time % 12 > 5 ? 3 : 4;
-      CTX.drawImage(SPRITE_SHEET, this.sx[this.frame], this.sy, 115, this.height, this.left, this.top, 115, this.height);
+      CTX.drawImage(SPRITE_SHEET, this.sx[this.frame], this.sy, 118, this.height, this.left, this.top, 118, this.height);
     } else {
       CTX.drawImage(SPRITE_SHEET, this.sx[2], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
     }
