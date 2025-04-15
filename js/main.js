@@ -34,6 +34,8 @@ $("twinkle").checked = twinkle;
 let bgmusic;
 let score = 0;
 let hi_score = 0;
+let playing = false;
+let current_frame;
 
 // Setup the clouds and stars
 for (let i = 0; i < 10; i++) {
@@ -102,7 +104,8 @@ function key_release(event) {
  */
 function update() {
   // Prepare for the next frame
-  requestAnimationFrame(update)
+  if (playing)
+    current_frame = requestAnimationFrame(update)
   
   /*** Desired FPS Trap ***/
   const NOW = performance.now()
@@ -186,12 +189,24 @@ function update() {
   // Draw the ground
   GROUND.update(velocity);
 
+  // Draw the score
+  CTX.fillStyle = "#888888"
+  CTX.fillText(`HI ${String(hi_score).padStart(5, '0')}      `, CANVAS.width - 10, 30)
+  CTX.fillStyle = "#444444"
+  CTX.fillText(`${String(score).padStart(5, '0')}`, CANVAS.width - 10, 30)
+
   // Draw enemies or obstacles...
   
-  // ENEMIES
+  // ENEMIES - also a great time to check the hitboxes
   for (let e of ENEMIES) {
-    if (e.active)
+    if (e.active) {
       e.update(velocity);
+      if (check_death(e)) {
+        e.active = false;
+        game_over();
+        return;
+      }
+    }
     
     if (e.x < 0 - e.width) {
       e.reload();
@@ -201,12 +216,6 @@ function update() {
   
   // Draw our hero
   HERO.update(frame_count);
-
-  // Draw the score
-  CTX.fillStyle = "#888888"
-  CTX.fillText(`HI ${String(hi_score).padStart(5, '0')}      `, CANVAS.width - 10, 30)
-  CTX.fillStyle = "#444444"
-  CTX.fillText(`${String(score).padStart(5, '0')}`, CANVAS.width - 10, 30)
 
   // Move the hero if the correct button is pressed
   if (KEYS_PRESSED.left && HERO.left > LEFT_CONSTRAINT)
@@ -260,8 +269,6 @@ function mute() {
 }
 
 function splash_screen() {
-  CTX.font = "30px Press-Start-2P";
-  CTX.textAlign = "center"
   
   // Setup the music
   bgmusic = new Audio("../media/arcade_music2.mp3")
@@ -273,20 +280,17 @@ function splash_screen() {
     $("volume").value = bgmusic.volume * 100;
   }
 
-  // Load the splash screen after the audio is ready
-  bgmusic.addEventListener("canplay", () => { 
-    bgmusic.loop = true;
-    CTX.fillStyle = "#999999"
-    CTX.fillText("Press SPACE to start...", CANVAS.width / 2, CANVAS.height / 3);
-  })
+  bgmusic.loop = true;
   
+  CTX.font = "30px Press-Start-2P";
+  CTX.textAlign = "center"
+  CTX.fillStyle = "#999999"
+  CTX.fillText("Press SPACE to start...", CANVAS.width / 2, CANVAS.height / 3);
 }
 
 function start_game(event) {
   if (event.keyCode != KEYS.SPACE) return;
   
-  console.log("Starting the game")
-
   // Replace the spacebar listener
   document.removeEventListener("keydown",start_game)
   document.addEventListener("keydown", keypress);
@@ -302,7 +306,8 @@ function start_game(event) {
   
   // Start the game!
   $("reset").disabled = true;
-  requestAnimationFrame(update);
+  playing = true;
+  current_frame = requestAnimationFrame(update);
 }
 
 // Reset everything to base values, including the high score
@@ -320,6 +325,41 @@ function reset() {
   location.reload();
 }
 
+/**
+ * Check to see if we've died!
+ */
+function check_death(enemy) {
+  if (HERO.right - 5 > enemy.x && HERO.right < enemy.x + enemy.width && HERO.bottom > enemy.y)
+    return true;
+}
+
+/**
+ * Show the game-over screen and update high score, if applicable.
+ * Stop the music, disable event listeners, etc.
+ */
+function game_over() {
+  cancelAnimationFrame(current_frame);
+  playing = false;
+  CTX.font = "38px Press-Start-2P";
+  CTX.textAlign = "center"
+  CTX.fillStyle = "#999999"
+  CTX.fillText("GAME OVER", CANVAS.width / 2, CANVAS.height / 3);
+  
+  HERO.draw_dead();
+  
+  // stop the music
+  bgmusic.pause();
+  bgmusic.currentTime = 0;
+
+
+  document.removeEventListener("keydown", keypress);
+  document.removeEventListener("keyup", key_release);  
+  document.addEventListener("keydown", start_game);
+}
+
 // Get ready for the splash screen
-let space_listener = document.addEventListener("keydown", start_game);
-splash_screen()
+document.addEventListener("keydown", start_game);
+splash_screen();
+
+// Debugging
+window.game_over = game_over;

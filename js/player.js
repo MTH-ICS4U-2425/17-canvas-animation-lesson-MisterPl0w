@@ -24,7 +24,7 @@ export default class Player {
       y: 0
     };
 
-    this.sx = [1854, 1942, 1678, 2206, 2324];
+    this.sx = [1854, 1942, 1678, 2206, 2324, 2118];
     this.sy = 1;
     this.frame = 0;
   }
@@ -72,6 +72,10 @@ export default class Player {
     } else {
       CTX.drawImage(SPRITE_SHEET, this.sx[2], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
     }
+  }
+
+  draw_dead() {
+    CTX.drawImage(SPRITE_SHEET, this.sx[5], this.sy, this.width, this.height, this.left, this.top, this.width, this.height);
   }
 
   /**
