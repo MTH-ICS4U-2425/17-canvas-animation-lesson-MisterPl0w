@@ -80,7 +80,7 @@ export default class Player {
   jump() {
     if (this.bottom >= FLOOR) {
       this.bottom = FLOOR
-      this.velocity.y = -26;
+      this.velocity.y = -20.5;
     }
   }
 }

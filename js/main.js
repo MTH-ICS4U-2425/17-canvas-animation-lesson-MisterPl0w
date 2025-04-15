@@ -22,14 +22,16 @@ const GROUND = new Ground();
 const CLOUDS = [];
 const MOON = {x: CANVAS.width + 10, y: 80, frame: 0, max_frame: 7}
 const STARS = [];
-const CACTI = [];
+const ENEMIES = [];
 
 let frame_time = performance.now()
 let frame_count = 1;
-let velocity = -4;
-let automate = true;
+let velocity = -7;
+let automate = false;
 let twinkle = true;
 let bgmusic;
+let score = 0;
+let hi_score = "00000"
 
 // Setup the clouds and stars
 for (let i = 0; i < 8; i++) {
@@ -37,8 +39,12 @@ for (let i = 0; i < 8; i++) {
   STARS.push({x:((i > 2) ? CANVAS.width : randInt(10, CANVAS.width-100)), y:randInt(10, 280), type:randInt(0, 2), active:(i < 3)});
 }
 
+// Setup the enemies
+for (let i = 0; i < 6; i++) {
+  ENEMIES.push(new Cactus())
+}
+
 // Event Listeners
-document.addEventListener("keyup", key_release);
 $("volume").addEventListener("input", volume);
 $("mute").addEventListener("click", mute);
 $("twinkle").addEventListener("click", () => {twinkle = $("twinkle").checked});
@@ -75,6 +81,9 @@ function key_release(event) {
     KEYS_PRESSED.right = false;
   } else if ([KEYS.S, KEYS.DOWN_ARROW].includes(event.keyCode)) {
     KEYS_PRESSED.down = false;
+  } else if ([KEYS.SPACE, KEYS.W, KEYS.UP_ARROW].includes(event.keyCode)) {
+    if (HERO.velocity.y < 0 && HERO.bottom > 200)
+      HERO.velocity.y += 4;
   }
   event.preventDefault();
 }
@@ -92,10 +101,11 @@ function update() {
   
   if (TIME_PASSED < MS_PER_FRAME) return
   
-  frame_count = frame_count > 300 ? 1 : frame_count + 1;
-
+  
   const EXCESS_TIME = TIME_PASSED % MS_PER_FRAME
   frame_time = NOW - EXCESS_TIME
+  frame_count = frame_count > 300 ? 1 : frame_count + 1;
+  if (frame_count % 6 == 0) score++;
   /*** END FPS Trap ***/
   
   // Clear the canvas
@@ -104,11 +114,21 @@ function update() {
   /**** Background graphics ****/
   // Moon
   if (MOON.x < -45) {
-    MOON.frame = MOON.frame == MOON.max_frame ? 0 : MOON.frame + 1;
+    // Full moon?
+    if (MOON.frame == 3) 
+      MOON.frame = -1
+    else if (MOON.frame == -1) 
+      MOON.frame = 4
+    else 
+      MOON.frame = MOON.frame == MOON.max_frame ? 0 : MOON.frame + 1;
+    
     MOON.x = CANVAS.width + 50;
   } else {
     MOON.x -= 0.25;
-    CTX.drawImage(SPRITE_SHEET, 953 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
+    if (MOON.frame == -1)
+      CTX.drawImage(SPRITE_SHEET, 1073, 0, 80, 85, MOON.x, MOON.y, 80, 85)
+    else
+      CTX.drawImage(SPRITE_SHEET, 953 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
   }
   // Activate a cloud and/or star - it might already be active
   if (frame_count % 150 == 0 && randInt(0, 2) == 1) {
@@ -156,21 +176,25 @@ function update() {
 
   // Draw enemies or obstacles...
   
-  // Should we add a cactus?
-  if (frame_count % 100 == 0 && randInt(0, 4) == 3) CACTI.push(new Cactus())
-  for (let c of CACTI) {
-    c.update(velocity);
-  }
-  // remove dead cacti
-  for (let c = 0; c < CACTI.length; c++) {
-    if (c.x < 0 - c.width) {
-      CACTI.splice(c, 1)
-      c--
+  // ENEMIES
+  for (let e of ENEMIES) {
+    if (e.active)
+      e.update(velocity);
+    
+    if (e.x < 0 - e.width) {
+      e.reload();
     }
   }
+  if (frame_count % 100 == 0) ENEMIES[randInt(0, 5)].active = true;
   
   // Draw our hero
   HERO.update(frame_count);
+
+  // Draw the score
+  CTX.fillStyle = "#888888"
+  CTX.fillText(`HI ${hi_score}      `, CANVAS.width - 10, 30)
+  CTX.fillStyle = "#444444"
+  CTX.fillText(`${String(score).padStart(5, '0')}`, CANVAS.width - 10, 30)
 
   // Move the hero if the correct button is pressed
   if (KEYS_PRESSED.left && HERO.left > LEFT_CONSTRAINT)
@@ -206,11 +230,6 @@ function update() {
   }
 }
 
-// Start the music
-//initSounds();
-// Start paused for now (remove this later)
-//playPause();
-
 // Update the volume of the music & sounds
 function volume() {
   bgmusic.volume = ($("volume").value/100);
@@ -227,27 +246,42 @@ function mute() {
 }
 
 function splash_screen() {
+  CTX.font = "30px Press-Start-2P";
+  CTX.textAlign = "center"
+  
   // Setup the music
   bgmusic = new Audio("../media/arcade_music2.mp3")
   bgmusic.volume = $("volume").value/100;
+  
+  // Load the splash screen after the audio is ready
   bgmusic.addEventListener("canplay", () => { 
     bgmusic.loop = true;
+    CTX.fillStyle = "#999999"
+    CTX.fillText("Press SPACE to start...", CANVAS.width / 2, CANVAS.height / 3);
   })
+  
 }
 
-function start_game() {
+function start_game(event) {
+  if (event.keyCode != KEYS.SPACE) return;
+  
   // Replace the spacebar listener
   document.removeEventListener("keydown",space_listener)
   document.addEventListener("keydown", keypress);
+  document.addEventListener("keyup", key_release);
+  
+  // Setup the score font
+  CTX.font = "12px Press-Start-2P";
+  CTX.textAlign = "right"
+  CTX.fillStyle = "#999999"
 
   // Start the music
   bgmusic.play();
-
+  
   // Start the game!
-  update();
+  requestAnimationFrame(update());
 }
 
+// Get ready for the splash screen
 let space_listener = document.addEventListener("keydown", start_game);
-
 splash_screen()
-

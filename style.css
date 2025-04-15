@@ -1,3 +1,9 @@
+@font-face {
+  font-family: Press-Start-2P;
+  src: url('./PressStart2P-Regular.ttf');
+}
+
+
 body {
   margin: 0;
   background-color: #555555;
@@ -17,9 +23,15 @@ body {
 
 }
 
+label {
+  font-family: Press-Start-2P;
+  font-size: 12px;
+}
+
 canvas {
   background-color: #202124;
   border: 2px solid #888888;
+  font-family: Press-Start-2P;
 }
 
 .centered {
@@ -154,3 +166,4 @@ input[type=range].volumeSlider:focus::-ms-fill-lower {
 input[type=range].volumeSlider:focus::-ms-fill-upper {
   background: rgba(26, 26, 26, 0.1);
 }
+

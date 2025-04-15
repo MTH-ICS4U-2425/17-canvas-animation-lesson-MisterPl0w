@@ -15,14 +15,21 @@ export const CTX = CANVAS.getContext('2d', {
     });
 CTX.filter = 'invert(0.98)'
 export const SPRITE_SHEET = $("sprite_sheet")
-//PATH.src = "../images/dino_large.png";
-  
+
+// Custom font from Google
+export const CUSTOM_FONT = new FontFace("Press-Start-2P", "url('./PressStart2P-Regular.ttf')");
+CUSTOM_FONT.load().then(function(font) {
+  // with canvas, if this is ommited won't work
+  document.fonts.add(font);
+  console.log('Font loaded');
+});
+
 // FPS Trapping
 export const FPS = 60;
 export const MS_PER_FRAME = 1000 / FPS;
 
 // Movement
-export const GRAVITY = 1.5;
+export const GRAVITY = 0.9;
 export const FLOOR = CANVAS.height - 28;  // Careful - if the height ever changes...
 
 // Some convenient keyboard codes

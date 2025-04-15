@@ -2,6 +2,9 @@
 <html>
   <head>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="./js/audio.js"></script>
     <script src="./js/main.js" defer type="module"></script>
   </head>
@@ -12,10 +15,10 @@
     <div>
       <input type="checkbox" id="twinkle" name="twinkle" value="Stars" checked>
       <label for="twinkle"> Twinkly Stars</label>&nbsp;&nbsp;&nbsp;
-      <input type="checkbox" id="automate" name="automate" value="Automate" checked>
+      <input type="checkbox" id="automate" name="automate" value="Automate">
       <label for="automate"> Automate Movement</label>&nbsp;&nbsp;&nbsp;
       <span><img id="mute" src="./images/Volume.png" width="20px" style="vertical-align: middle;cursor: pointer;"><input id="volume" class="volumeSlider" type="range" max="100" value="15" style="margin-left: 8px;vertical-align: middle;"></span><br><br>
-      <canvas id="game_canvas" width="1100px" height="350px"></canvas>
+      <canvas id="game_canvas" width="1100px" height="350px" class="press-start-2p-regular"></canvas>
     </div>
   </div>
 </body>

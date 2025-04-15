@@ -37,6 +37,7 @@ export default class Cactus {
     this.x = CANVAS.width + this.width;
     this.height = options[this.type].sh;
     this.y = FLOOR - this.height + randInt(-2, 10);
+    this.active = false;
   }
 
   draw() {
@@ -48,5 +49,18 @@ export default class Cactus {
 
     this.x += velocity;
     this.draw();
+  }
+
+  reload() {
+    //Am I large or small?
+    this.type = randInt(0, 5);
+
+    // values depend on size
+    this.sx = options[this.type].sx;
+    this.width = options[this.type].sw;
+    this.x = CANVAS.width + this.width;
+    this.height = options[this.type].sh;
+    this.y = FLOOR - this.height + randInt(-2, 10);
+    this.active = false;
   }
 }
