@@ -36,7 +36,7 @@ export default class Cactus {
     this.width = options[this.type].sw;
     this.x = CANVAS.width + this.width;
     this.height = options[this.type].sh;
-    this.y = FLOOR - this.height + randInt(-2, 10);
+    this.y = FLOOR - this.height + randInt(-8, 15);
     this.active = false;
   }
 

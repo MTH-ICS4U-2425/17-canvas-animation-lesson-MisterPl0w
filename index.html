@@ -11,14 +11,19 @@
 
 <body>
   <img id="sprite_sheet" src="./images/dino_large.png" hidden class="inverted" />
-  <div class="centered">
+  <div class="content">
     <div>
-      <input type="checkbox" id="twinkle" name="twinkle" value="Stars" checked>
-      <label for="twinkle"> Twinkly Stars</label>&nbsp;&nbsp;&nbsp;
-      <input type="checkbox" id="automate" name="automate" value="Automate">
-      <label for="automate"> Automate Movement</label>&nbsp;&nbsp;&nbsp;
-      <span><img id="mute" src="./images/Volume.png" width="20px" style="vertical-align: middle;cursor: pointer;"><input id="volume" class="volumeSlider" type="range" max="100" value="15" style="margin-left: 8px;vertical-align: middle;"></span><br><br>
-      <canvas id="game_canvas" width="1100px" height="350px" class="press-start-2p-regular"></canvas>
+      <div>
+        <input type="checkbox" id="twinkle" name="twinkle" value="Stars">
+        <label for="twinkle"> Twinkly Stars</label>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" id="automate" name="automate" value="Automate">
+        <label for="automate"> Automate Movement</label>&nbsp;&nbsp;&nbsp;
+        <span><img id="mute" src="./images/Volume.png" width="20px" style="vertical-align: middle;cursor: pointer;"><input id="volume" class="volumeSlider" type="range" max="100" value="15" style="margin-left: 8px;vertical-align: middle;"></span><br><br>
+        <canvas id="game_canvas" width="1100px" height="350px" class="press-start-2p-regular"></canvas>
+      </div>
+      <div class="right">
+        <button id="reset">Reset</button>
+      </div>
     </div>
   </div>
 </body>

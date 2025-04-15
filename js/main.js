@@ -27,11 +27,13 @@ const ENEMIES = [];
 let frame_time = performance.now()
 let frame_count = 1;
 let velocity = -7;
-let automate = false;
-let twinkle = true;
+let automate = localStorage.getItem("automate") === "true";
+$("automate").checked = automate;
+let twinkle = localStorage.getItem("twinkle") === "true";
+$("twinkle").checked = twinkle;
 let bgmusic;
 let score = 0;
-let hi_score = "00000"
+let hi_score = 0;
 
 // Setup the clouds and stars
 for (let i = 0; i < 10; i++) {
@@ -47,8 +49,15 @@ for (let i = 0; i < 6; i++) {
 // Event Listeners
 $("volume").addEventListener("input", volume);
 $("mute").addEventListener("click", mute);
-$("twinkle").addEventListener("click", () => {twinkle = $("twinkle").checked});
-$("automate").addEventListener("click", () => {automate = $("automate").checked});
+$("reset").addEventListener("click", reset);
+$("twinkle").addEventListener("click", () => {
+  twinkle = $("twinkle").checked; 
+  localStorage.setItem("twinkle", twinkle);
+});
+$("automate").addEventListener("click", () => {
+  automate = $("automate").checked; 
+  localStorage.setItem("automate", automate);
+});
 
 // Disable the context menu on the entire document
 document.addEventListener("contextmenu", (event) => { 
@@ -195,7 +204,7 @@ function update() {
 
   // Draw the score
   CTX.fillStyle = "#888888"
-  CTX.fillText(`HI ${hi_score}      `, CANVAS.width - 10, 30)
+  CTX.fillText(`HI ${String(hi_score).padStart(5, '0')}      `, CANVAS.width - 10, 30)
   CTX.fillStyle = "#444444"
   CTX.fillText(`${String(score).padStart(5, '0')}`, CANVAS.width - 10, 30)
 
@@ -236,6 +245,7 @@ function update() {
 // Update the volume of the music & sounds
 function volume() {
   bgmusic.volume = ($("volume").value/100);
+  localStorage.setItem("volume", bgmusic.volume);
 }
 
 function mute() {
@@ -246,6 +256,7 @@ function mute() {
   }
   document.getElementById("volume").disabled = !bgmusic.muted;
   bgmusic.muted = !bgmusic.muted;
+  localStorage.setItem("muted", bgmusic.muted);
 }
 
 function splash_screen() {
@@ -254,8 +265,14 @@ function splash_screen() {
   
   // Setup the music
   bgmusic = new Audio("../media/arcade_music2.mp3")
-  bgmusic.volume = $("volume").value/100;
-  
+  if (localStorage.getItem("muted") === "true") mute();
+  if (localStorage.getItem("volume") == null)
+    bgmusic.volume = $("volume").value/100;
+  else {
+    bgmusic.volume = Number(localStorage.getItem("volume"))
+    $("volume").value = bgmusic.volume * 100;
+  }
+
   // Load the splash screen after the audio is ready
   bgmusic.addEventListener("canplay", () => { 
     bgmusic.loop = true;
@@ -268,8 +285,10 @@ function splash_screen() {
 function start_game(event) {
   if (event.keyCode != KEYS.SPACE) return;
   
+  console.log("Starting the game")
+
   // Replace the spacebar listener
-  document.removeEventListener("keydown",space_listener)
+  document.removeEventListener("keydown",start_game)
   document.addEventListener("keydown", keypress);
   document.addEventListener("keyup", key_release);
   
@@ -282,7 +301,23 @@ function start_game(event) {
   bgmusic.play();
   
   // Start the game!
-  requestAnimationFrame(update());
+  $("reset").disabled = true;
+  requestAnimationFrame(update);
+}
+
+// Reset everything to base values, including the high score
+function reset() {
+  if (!confirm(`⚠️ This will reset all settings, including your high score. ⚠️
+
+      Click "OK" to reset or "Cancel" to keep your settings.
+      `)) return;
+
+  localStorage.setItem("muted", false);
+  localStorage.setItem("volume", 0.15);
+  localStorage.setItem("twinkle", true);
+  localStorage.setItem("automate", false);
+  localStorage.setItem("hi_score", 0);
+  location.reload();
 }
 
 // Get ready for the splash screen
