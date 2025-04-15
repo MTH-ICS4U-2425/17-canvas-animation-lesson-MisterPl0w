@@ -34,9 +34,9 @@ let score = 0;
 let hi_score = "00000"
 
 // Setup the clouds and stars
-for (let i = 0; i < 8; i++) {
-  CLOUDS.push({x:((i > 2) ? CANVAS.width : randInt(10, CANVAS.width-100)), y:randInt(10, 250), velocity_divider:randInt(5, 20), active:(i < 3)});
-  STARS.push({x:((i > 2) ? CANVAS.width : randInt(10, CANVAS.width-100)), y:randInt(10, 280), type:randInt(0, 2), active:(i < 3)});
+for (let i = 0; i < 10; i++) {
+  CLOUDS.push({x:((i > 3) ? CANVAS.width : randInt(10, CANVAS.width-100)), y:randInt(10, 250), velocity_divider:randInt(5, 20), active:(i < 4), scale: (randInt(50, 150)/100)});
+  STARS.push({x:((i > 3) ? CANVAS.width : randInt(10, CANVAS.width-100)), y:randInt(10, 280), type:randInt(0, 2), active:(i < 4), scale: (randInt(50, 150)/100)});
 }
 
 // Setup the enemies
@@ -82,8 +82,8 @@ function key_release(event) {
   } else if ([KEYS.S, KEYS.DOWN_ARROW].includes(event.keyCode)) {
     KEYS_PRESSED.down = false;
   } else if ([KEYS.SPACE, KEYS.W, KEYS.UP_ARROW].includes(event.keyCode)) {
-    if (HERO.velocity.y < 0 && HERO.bottom > 200)
-      HERO.velocity.y += 4;
+    if (HERO.velocity.y < 0 && HERO.bottom > 180)
+      HERO.velocity.y += 5.5;
   }
   event.preventDefault();
 }
@@ -131,12 +131,12 @@ function update() {
       CTX.drawImage(SPRITE_SHEET, 953 + 40*MOON.frame, 0, 40, 85, MOON.x, MOON.y, 40, 85)
   }
   // Activate a cloud and/or star - it might already be active
-  if (frame_count % 150 == 0 && randInt(0, 2) == 1) {
+  if (frame_count % 100 == 0 && randInt(0, 1) == 1)
     CLOUDS[randInt(0, 7)].active = true;
+  if (frame_count % 75 == 0 && randInt(10, 11) == 11) 
     STARS[randInt(0, 7)].active = true;
-  }
   // Draw the clouds and stars
-  for (let c = 0; c < 8; c++) {
+  for (let c = 0; c < CLOUDS.length; c++) {
 
     if (STARS[c].active) {
       // If I'm off the screen, deactivate me
@@ -144,6 +144,7 @@ function update() {
         STARS[c].active = false;
         STARS[c].x = CANVAS.width;
         STARS[c].y = randInt(10, 250);
+        STARS[c].scale = (randInt(50, 150)/100)
       }
       else {
         // twinkle the stars 
@@ -151,24 +152,26 @@ function update() {
           let rnd = randInt(80, 100)/100
           CTX.filter = `invert(${rnd})`
         }
-        CTX.drawImage(SPRITE_SHEET, 1274, STARS[c].type*18 + 1, 18, 18, STARS[c].x, STARS[c].y, 18, 18);
+        CTX.drawImage(SPRITE_SHEET, 1274, STARS[c].type*18 + 1, 18, 18, STARS[c].x, STARS[c].y, 18*STARS[c].scale, 18*STARS[c].scale);
         STARS[c].x += velocity / 20;
         CTX.filter = 'invert(0.98)'
-        if (CLOUDS[c].active) {
-          // If I'm off the screen, deactivate me
-          if (CLOUDS[c].x < -100) {
-            CLOUDS[c].active = false;
-            CLOUDS[c].x = CANVAS.width;
-            CLOUDS[c].y = randInt(10, 250);
-            CLOUDS[c].velocity_divider = randInt(5, 20);
-          }
-          else {
-            CTX.drawImage(SPRITE_SHEET, 165, 0, 95, 35, CLOUDS[c].x, CLOUDS[c].y, 95, 35);
-            CLOUDS[c].x += velocity / CLOUDS[c].velocity_divider;
-          }
-        }
       }
     }
+
+    if (CLOUDS[c].active) {
+      // If I'm off the screen, deactivate me
+      if (CLOUDS[c].x < -150) {
+        CLOUDS[c].active = false;
+        CLOUDS[c].x = CANVAS.width;
+        CLOUDS[c].y = randInt(10, 250);
+        CLOUDS[c].velocity_divider = randInt(5, 20);
+        CLOUDS[c].scale = (randInt(50, 150)/100);
+      }
+      else {
+        CTX.drawImage(SPRITE_SHEET, 165, 0, 95, 35, CLOUDS[c].x, CLOUDS[c].y, 95*CLOUDS[c].scale, 35*CLOUDS[c].scale);
+        CLOUDS[c].x += velocity / CLOUDS[c].velocity_divider;
+      }
+  }
   }
 
   // Draw the ground
