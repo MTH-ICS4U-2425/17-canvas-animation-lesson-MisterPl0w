@@ -43,10 +43,13 @@ for (let i = 0; i < 10; i++) {
   STARS.push({x:((i > 3) ? CANVAS.width : randInt(10, CANVAS.width-100)), y:randInt(10, 280), type:randInt(0, 2), active:(i < 4), scale: (randInt(50, 150)/100)});
 }
 
-// Setup the enemies
+// Setup the enemies (6 cacti)
 for (let i = 0; i < 6; i++) {
   ENEMIES.push(new Cactus())
 }
+
+// Two birds
+
 
 // Event Listeners
 $("volume").addEventListener("input", volume);
@@ -203,6 +206,7 @@ function update() {
       e.update(velocity);
       if (check_death(e)) {
         e.active = false;
+        e.reload();
         game_over();
         return;
       }
@@ -329,8 +333,14 @@ function reset() {
  * Check to see if we've died!
  */
 function check_death(enemy) {
-  if (HERO.right - 5 > enemy.x && HERO.right < enemy.x + enemy.width && HERO.bottom > enemy.y)
+  // Specifically the bottom-right corner
+  if (HERO.right - 15 > enemy.x && HERO.right < enemy.x + enemy.width && HERO.bottom - 15 > enemy.y)
     return true;
+  // Specifically the bottom (here's the problem - the dino is wider than the cacti)
+  if (HERO.bottom - 15 > enemy.y && HERO.right > enemy.x + enemy.width && HERO.left < enemy.x + enemy.width - 15)
+    return true;
+
+  return false;
 }
 
 /**

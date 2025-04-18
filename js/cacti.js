@@ -23,19 +23,27 @@ const options = [
   {sx: 548, sw: 102, sh: 72},
   {sx: 652, sw: 50, sh: 101},
   {sx: 702, sw: 100, sh: 101},
-  {sx: 802, sw: 150, sh: 101}
+  {sx: 802, sw: 150, sh: 101},
+  {sx: 802, sw: 150, sh: 101},  // Bird frame 0
+  {sx: 802, sw: 150, sh: 101}   // Bird frame 1
 ]
 
 export default class Cactus {
-  constructor() {
-    //Am I large or small?
-    this.type = randInt(0, 5);
-    
+  #type;
+  #frame = 0;
+  constructor(type = "cactus") {
+    if (type == "cactus")
+      //Am I large or small?
+      this.#type = randInt(0, 5);
+    else if (type == "bird") {
+      this.#type = 6;
+    }
+      
     // values depend on size
-    this.sx = options[this.type].sx;
-    this.width = options[this.type].sw;
+    this.sx = options[this.#type].sx;
+    this.width = options[this.#type].sw;
     this.x = CANVAS.width + this.width;
-    this.height = options[this.type].sh;
+    this.height = options[this.#type].sh;
     this.y = FLOOR - this.height + randInt(-8, 15);
     this.active = false;
   }
@@ -45,21 +53,22 @@ export default class Cactus {
   }
 
   update(velocity) {
-    // We'll need to take care of items off the screen somehow
-
+    if (this.#type > 5)
+      this.#frame = this.#frame == 0 ? this.#frame = 1 : this.#frame = 0; 
     this.x += velocity;
     this.draw();
   }
 
   reload() {
-    //Am I large or small?
-    this.type = randInt(0, 5);
+    if (this.#type < 6)
+      //Am I large or small?
+      this.#type = randInt(0, 5);
 
     // values depend on size
-    this.sx = options[this.type].sx;
-    this.width = options[this.type].sw;
+    this.sx = options[this.#type].sx;
+    this.width = options[this.#type].sw;
     this.x = CANVAS.width + this.width;
-    this.height = options[this.type].sh;
+    this.height = options[this.#type].sh;
     this.y = FLOOR - this.height + randInt(-2, 10);
     this.active = false;
   }
