@@ -33,7 +33,8 @@ let twinkle = localStorage.getItem("twinkle") === "true";
 $("twinkle").checked = twinkle;
 let bgmusic;
 let score = 0;
-let hi_score = 0;
+let hi_score = Number(localStorage.getItem("hi_score"));
+if (hi_score == null) hi_score = 0;
 let playing = false;
 let current_frame;
 
@@ -193,11 +194,8 @@ function update() {
   GROUND.update(velocity);
 
   // Draw the score
-  CTX.fillStyle = "#888888"
-  CTX.fillText(`HI ${String(hi_score).padStart(5, '0')}      `, CANVAS.width - 10, 30)
-  CTX.fillStyle = "#444444"
-  CTX.fillText(`${String(score).padStart(5, '0')}`, CANVAS.width - 10, 30)
-
+  draw_score();
+  
   // Draw enemies or obstacles...
   
   // ENEMIES - also a great time to check the hitboxes
@@ -350,6 +348,16 @@ function check_death(enemy) {
 function game_over() {
   cancelAnimationFrame(current_frame);
   playing = false;
+
+  // Check for high score, adjust accordingly.
+  if (score > hi_score) {
+    hi_score = score;
+    localStorage.setItem("hi_score", hi_score);
+  }
+  score = 0;
+  // Need to figure out how to update the score and hi score gracefully.
+  //draw_score();
+  
   CTX.font = "38px Press-Start-2P";
   CTX.textAlign = "center"
   CTX.fillStyle = "#999999"
@@ -365,6 +373,14 @@ function game_over() {
   document.removeEventListener("keydown", keypress);
   document.removeEventListener("keyup", key_release);  
   document.addEventListener("keydown", start_game);
+
+}
+
+function draw_score() {
+  CTX.fillStyle = "#888888"
+  CTX.fillText(`HI ${String(hi_score).padStart(5, '0')}      `, CANVAS.width - 10, 30)
+  CTX.fillStyle = "#444444"
+  CTX.fillText(`${String(score).padStart(5, '0')}`, CANVAS.width - 10, 30)
 }
 
 // Get ready for the splash screen
