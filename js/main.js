@@ -357,7 +357,6 @@ function game_over() {
   score = 0;
   // Need to figure out how to update the score and hi score gracefully.
   //draw_score();
-  
   CTX.font = "38px Press-Start-2P";
   CTX.textAlign = "center"
   CTX.fillStyle = "#999999"
@@ -369,7 +368,7 @@ function game_over() {
   bgmusic.pause();
   bgmusic.currentTime = 0;
 
-
+  
   document.removeEventListener("keydown", keypress);
   document.removeEventListener("keyup", key_release);  
   document.addEventListener("keydown", start_game);
@@ -385,7 +384,12 @@ function draw_score() {
 
 // Get ready for the splash screen
 document.addEventListener("keydown", start_game);
-splash_screen();
+// Show the splash screen once the custom fonts are loaded
+CTX.font = "38px Press-Start-2P";
+document.fonts.onloadingdone = () => {
+  console.log("Font loading complete");
+  splash_screen();
+};
 
 // Debugging
 window.game_over = game_over;
