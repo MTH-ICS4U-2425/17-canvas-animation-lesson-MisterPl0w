@@ -263,7 +263,7 @@ function mute() {
   if (!bgmusic.muted) {
     document.getElementById("mute").src = "images/Mute.png";
   } else {
-    document.getElementById("mute").src = "../images/Volume.png";
+    document.getElementById("mute").src = "images/Volume.png";
   }
   document.getElementById("volume").disabled = !bgmusic.muted;
   bgmusic.muted = !bgmusic.muted;
@@ -273,7 +273,7 @@ function mute() {
 function splash_screen() {
   
   // Setup the music
-  bgmusic = new Audio("../media/arcade_music2.mp3")
+  bgmusic = new Audio("media/arcade_music2.mp3")
   if (localStorage.getItem("muted") === "true") mute();
   if (localStorage.getItem("volume") == null)
     bgmusic.volume = $("volume").value/100;
