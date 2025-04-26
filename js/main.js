@@ -261,7 +261,7 @@ function volume() {
 
 function mute() {
   if (!bgmusic.muted) {
-    document.getElementById("mute").src = "../images/Mute.png";
+    document.getElementById("mute").src = "images/Mute.png";
   } else {
     document.getElementById("mute").src = "../images/Volume.png";
   }
